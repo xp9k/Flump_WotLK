@@ -1,0 +1,8 @@
+## Interface: 30300
+## Title: |cff1784d1Flump|r [|cff00ff00D|rivision |cff00ff00W|rild |cff00ff00D|rucks Edition]
+## Notes: Анонс кулдаунов, тринек, пиров и пр.
+## SavedVariables: FlumpDB
+## Author: Moop, xp9k
+## Version: 1.0.8
+
+Flump.lua
