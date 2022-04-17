@@ -7,20 +7,23 @@ local DIVINE_PLEA = true		-- Announce when (holy) Paladins cast Divine Plea? (-5
 
 local status = "|cff39d7e5Flump: %s|r"
 
-local bot	 = "%s%s ставит %s!"
-local used	 = "%s%s использует %s!"
-local sw	 = "%s заканчивается на %s%s!"
-local cast	 = "%s%s применяет %s на %s%s!"
-local fade	 = "На %s%s заканчивается %s от %s%s!"
-local feast  = "%s%s готовит %s!"
-local gs	 = "%s%s's %s прокнул: %d отлечено!"
+local bot	 = "%s used a %s!"
+local used	 = "%s used %s!"
+local sw	 = "%s faded from %s!"
+local cast	 = "%s cast %s on %s!"
+local fade	 = "%s's %s faded from %s!"
+local feast  = "%s prepares a %s!"
+local gs	 = "%s's %s consumed: %s heal!"
 local ad	 = "%s%s's %s consumed!"
-local res	 = "%s%s применяет %s на %s%s!"
-local portal = "%s%s открыл(а) %s!"
-local create = "%s%s создал(а) %s!"
-local dispel = "%s%s's %s failed to dispel %s%s's %s!"
-local ss	 = "%s умер с %s!"
+local res	 = "%s's %s resurrected %s!"
+local portal = "%s opened a %s!"
+local create = "%s is creating a %s!"
+local dispel = "%s's %s failed to dispel %s's %s!"
+local ss	 = "%s died with a %s!"
 local miscellaneous = "%s применяет %s"
+
+local on = "|cff00ff00On|r"
+local off = "|cffff0000Off|r"
 
 local sacrifice  = {}
 local soulstones = {}
@@ -304,14 +307,33 @@ function Flump:ADDON_LOADED(addon)
 		if self.db.enabled then
 			self.db.enabled = false
 			self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-			print(status:format("|cffff0000Отключен|r"))
+			print(status:format(off))
 		else
 			self.db.enabled = true
 			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-			print(status:format("|cff00ff00Включен|r"))
+			print(status:format(on))
 		end
 	end
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
 Flump:RegisterEvent("ADDON_LOADED")
+
+if GetLocale() == "ruRU" then
+	bot	 = "%s%s ставит %s!"
+	used = "%s%s использует %s!"
+	sw	 = "%s заканчивается на %s%s!"
+	cast = "%s%s применяет %s на %s%s!"
+	fade = "На %s%s заканчивается %s от %s%s!"
+	feast  = "%s%s готовит %s!"
+	gs	 = "%s%s's %s прокнул: %d отлечено!"
+	ad	 = "%s%s's %s consumed!"
+	res	 = "%s%s применяет %s на %s%s!"
+	portal = "%s%s открыл(а) %s!"
+	create = "%s%s создал(а) %s!"
+	dispel = "%s%s's %s failed to dispel %s%s's %s!"
+	ss = "%s умер с %s!"
+	miscellaneous = "%s применяет %s"
+	on = "|cff00ff00Включен|r"
+	off = "|cffff0000Отключен|r"
+end
