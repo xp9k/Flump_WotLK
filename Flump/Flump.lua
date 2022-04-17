@@ -20,7 +20,6 @@ local portal = "%s opened a %s!"
 local create = "%s is creating a %s!"
 local dispel = "%s's %s failed to dispel %s's %s!"
 local ss	 = "%s died with a %s!"
-local miscellaneous = "%s применяет %s"
 
 local on = "|cff00ff00On|r"
 local off = "|cffff0000Off|r"
@@ -209,6 +208,8 @@ function Flump:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, srcGUID, srcName, s
 				send(cast:format(icon(srcName), srcName, GetSpellLink(spellID), icon(destName), destName)) -- Divine Intervention
 			elseif use[spellID] then
 				send(used:format(icon(srcName), srcName, GetSpellLink(spellID))) -- [X] used [Y]
+			elseif misc[spellID] then
+				send(used:format(icon(srcName), srcName, GetSpellLink(spellID))) -- [X] used [Y]
 			elseif spellID == 64205 then  -- Workaround for Divine Sacrifice issue
 				send(used:format(icon(srcName), srcName, GetSpellLink(spellID))) -- [X] used Divine Sacrifice
 				sacrifice[srcGUID] = true
@@ -239,6 +240,23 @@ function Flump:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, srcGUID, srcName, s
 				local amount = ...
 				ad_heal = true
 				send(gs:format(icon(srcName), srcName, GetSpellLink(spellID), amount)) -- [X]'s [Y] consumed: [Z] heal
+			end
+		end
+		
+		elseif event == "SPELL_AURA_REMOVED" then
+			if spells[spellID] or (spellName == HOP and UnitHealthMax(destName) >= MIN_TANK_HP) then
+				send(fade:format(icon(srcName), srcName, GetSpellLink(spellID), icon(destName), destName)) -- [X]'s [Y] faded from [Z]
+			elseif use[spellID] and UnitHealthMax(srcName) >= MIN_TANK_HP then
+				send(sw:format(GetSpellLink(spellID), icon(srcName), srcName)) -- [X] faded from [Y]
+			elseif bonus[spellID] then
+				send(sw:format(GetSpellLink(spellID), icon(srcName), srcName)) -- [X] faded from [Y] (bonus)
+			elseif spellID == 64205 and sacrifice[destGUID] then
+				send(sw:format(GetSpellLink(spellID), icon(srcName), srcName)) -- Divine Sacrifice faded from [Y]
+				sacrifice[destGUID] = nil
+			elseif special[spellID] then -- Workaround for spells which aren't tanking spells
+				send(sw:format(GetSpellLink(spellID), icon(srcName), srcName)) -- Aura Mastery faded from [X]
+			elseif DIVINE_PLEA and spellID == 54428 and UnitManaMax(srcName) >= MIN_HEALER_MANA then
+				send(sw:format(GetSpellLink(spellID), icon(srcName), srcName)) -- Divine Plea faded from [X]
 			end
 		end
 	end
@@ -327,13 +345,12 @@ if GetLocale() == "ruRU" then
 	fade = "На %s%s заканчивается %s от %s%s!"
 	feast  = "%s%s готовит %s!"
 	gs	 = "%s%s's %s прокнул: %d отлечено!"
-	ad	 = "%s%s's %s consumed!"
+--	ad	 = "%s%s's %s consumed!"
 	res	 = "%s%s применяет %s на %s%s!"
 	portal = "%s%s открыл(а) %s!"
 	create = "%s%s создал(а) %s!"
-	dispel = "%s%s's %s failed to dispel %s%s's %s!"
+--	dispel = "%s%s's %s failed to dispel %s%s's %s!"
 	ss = "%s умер с %s!"
-	miscellaneous = "%s применяет %s"
 	on = "|cff00ff00Включен|r"
 	off = "|cffff0000Отключен|r"
 end
